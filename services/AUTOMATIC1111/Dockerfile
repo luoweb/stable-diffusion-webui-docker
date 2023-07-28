@@ -14,6 +14,9 @@ RUN . /clone.sh CodeFormer https://github.com/sczhou/CodeFormer.git 8392d0334956
 RUN . /clone.sh BLIP https://github.com/salesforce/BLIP.git 3a29b7410476bf5f2ba0955827390eb6ea1f4f9d
 RUN . /clone.sh k-diffusion https://github.com/crowsonkb/k-diffusion.git d79351ac29bcaa73b1de5039197a60109470382e
 RUN . /clone.sh clip-interrogator https://github.com/pharmapsychotic/clip-interrogator 2cf03aaf6e704197fd0dae7c7f96aa59cf1b11c9
+# Stable Diffusion XL 
+RUN . /clone.sh generative-models https://github.com/Stability-AI/generative-models 45c443b316737a4ab6e40413d7794a7f5657c19f
+
 
 
 FROM alpine:3.17 as xformers
