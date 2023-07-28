@@ -62,8 +62,10 @@ jobs:
 
       # build images      
       - name: build with  Docker Compose
+        if: ${{ matrix.profile }} == 'auto'
         run: docker compose --profile ${{ matrix.profile }}  build --build-arg AUTO_IMAGE_URL=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --progress plain
-       
+      # push images    
       - name: docker push image
+        if: ${{ matrix.profile }} == 'auto'
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
        
