@@ -12,7 +12,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: registry.us-west-1.aliyuncs.com
   # github.repository as <account>/<repo>
-  IMAGE_NAME: roweb/automatic1111-sd-webui
+  AUTO_IMAGE_NAME: roweb/automatic1111-sd-webui
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.AUTO_IMAGE_NAME }}:latest
           tags: |
             type=schedule,pattern=nightly-{{date 'YYYYMMDDhhmmss'}}
             type=schedule,pattern=latest
@@ -60,13 +60,26 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
 
-      # build images      
-      - name: build with  Docker Compose
-        if: ${{ matrix.profile }} == 'auto'
-        run: docker compose --profile ${{ matrix.profile }}  build --build-arg AUTO_IMAGE_URL=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --progress plain
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image ${{ env.REGISTRY }}/${{ env.AUTO_IMAGE_NAME }}:latest
+        id: build-and-push
+        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
+        with:
+          context: ./services/AUTOMATIC1111/
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # # build images      
+      # - name: build with  Docker Compose
+      #   if: ${{ matrix.profile }} == 'auto'
+      #   run: docker compose --profile ${{ matrix.profile }}  build --build-arg AUTO_IMAGE_URL=${{ env.REGISTRY }}/${{ env.AUTO_IMAGE_NAME }}:latest --progress plain
       
-      # push images    
-      - name: docker push image
-        if: ${{ matrix.profile }} == 'auto'
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      # # push images    
+      # - name: docker push image ${{ env.REGISTRY }}/${{ env.AUTO_IMAGE_NAME }}:latest
+      #   if: ${{ matrix.profile }} == 'auto'
+      #   run: docker push ${{ env.REGISTRY }}/${{ env.AUTO_IMAGE_NAME }}:latest
        
