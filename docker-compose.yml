@@ -29,9 +29,10 @@ services:
     <<: *base_service
     profiles: ["auto"]
     build: ./services/AUTOMATIC1111
-    image: ${{ env.AUTO_IMAGE_URL }} # automatic1111-sd-webui:latest
+    image: automatic1111-sd-webui:latest
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
+ 
 
   auto-cpu:
     <<: *automatic
