@@ -20,9 +20,9 @@ jobs:
       matrix:
         profile:
           - auto
-          - invoke
-          - comfy
-          - download
+          # - invoke
+          # - comfy
+          # - download
     runs-on: ubuntu-latest
     name: ${{ matrix.profile }}
     steps:
@@ -64,6 +64,7 @@ jobs:
       - name: build with  Docker Compose
         if: ${{ matrix.profile }} == 'auto'
         run: docker compose --profile ${{ matrix.profile }}  build --build-arg AUTO_IMAGE_URL=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --progress plain
+      
       # push images    
       - name: docker push image
         if: ${{ matrix.profile }} == 'auto'
