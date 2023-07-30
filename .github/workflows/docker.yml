@@ -10,7 +10,8 @@ on:
 
 env:
   # Use docker.io for Docker Hub if empty
-  REGISTRY: registry.us-west-1.aliyuncs.com
+  # REGISTRY: registry.us-west-1.aliyuncs.com
+  REGISTRY: registry.cn-hangzhou.aliyuncs.com
   # github.repository as <account>/<repo>
   AUTO_IMAGE_NAME: roweb/automatic1111-sd-webui
 

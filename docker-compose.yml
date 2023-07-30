@@ -29,7 +29,8 @@ services:
     <<: *base_service
     profiles: ["auto"]
     build: ./services/AUTOMATIC1111
-    image: registry.us-west-1.aliyuncs.com/roweb/automatic1111-sd-webui:latest
+    # image: registry.us-west-1.aliyuncs.com/roweb/automatic1111-sd-webui:latest
+    image: registry.cn-hangzhou.aliyuncs.com/roweb/automatic1111-sd-webui:latest
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
  
