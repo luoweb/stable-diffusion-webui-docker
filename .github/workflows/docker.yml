@@ -2,11 +2,18 @@ name: Build Images
 
 on:
   push:
-    branches: master
+    branches: ['main','master','dev']
   pull_request:
       paths:
         - docker-compose.yml
         - services
+
+env:
+  # Use docker.io for Docker Hub if empty
+  # REGISTRY: registry.us-west-1.aliyuncs.com
+  REGISTRY: registry.cn-hangzhou.aliyuncs.com
+  # github.repository as <account>/<repo>
+  # IMAGE_NAME: roweb/automatic1111-sd-webui
 
 jobs:
   build:
@@ -22,3 +29,50 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: docker compose --profile ${{ matrix.profile }} build --progress plain
+
+  push:
+    needs: build
+    strategy:
+      matrix:
+        profile:
+          - auto
+          - invoke
+          - comfy
+    runs-on: ubuntu-latest
+    name: ${{ matrix.profile }}
+    steps:    
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+     # docker images      
+      - name: docker images
+        if: github.event_name != 'pull_request'
+        run: docker images
+    
+      # docker tag and push   
+      - name: docker tag and push sd-${{ matrix.profile }}
+        if: matrix.profile == 'sd-auto'
+        run: | 
+          docker tag sd-${{ matrix.profile }}:63 ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+          docker push ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+
+      # docker tag and push   
+      - name: docker tag and push sd-${{ matrix.profile }}
+        if: matrix.profile == 'sd-invoke'
+        run: | 
+          docker tag sd-${{ matrix.profile }}:30 ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+          docker push ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+
+      # docker tag and push   
+      - name: docker tag and push sd-${{ matrix.profile }}
+        if: matrix.profile == 'sd-comfy'
+        run: | 
+          docker tag sd-${{ matrix.profile }}:4 ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+          docker push ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest

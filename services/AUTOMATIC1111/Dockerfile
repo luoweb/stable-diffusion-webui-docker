@@ -40,12 +40,15 @@ RUN --mount=type=cache,target=/cache --mount=type=cache,target=/root/.cache/pip 
   pip install /cache/torch-2.0.1-cp310-cp310-linux_x86_64.whl torchvision --index-url https://download.pytorch.org/whl/cu118
 
 
-
 RUN --mount=type=cache,target=/root/.cache/pip \
   git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
   cd stable-diffusion-webui && \
   git reset --hard 20ae71faa8ef035c31aa3a410b707d792c8203a3 && \
-  pip install -r requirements_versions.txt
+  pip install -r requirements_versions.txt \
+  # sd-webi-controlnet
+  pip install mediapipe svglib fvcore --prefer-binary \
+  # sd-webui-prompt-all-in-one
+  pip install chardet fastapi translators openai boto3 aliyun-python-sdk-core aliyun-python-sdk-alimt --prefer-binary 
 
 RUN --mount=type=cache,target=/root/.cache/pip  \
   --mount=type=bind,from=xformers,source=/wheel.whl,target=/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64.whl \
