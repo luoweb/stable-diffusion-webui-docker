@@ -27,20 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     name: ${{ matrix.profile }}
     steps:
-      - uses: actions/checkout@v3
-      - run: docker compose --profile ${{ matrix.profile }} build --progress plain
-
-  push:
-    needs: build
-    strategy:
-      matrix:
-        profile:
-          - auto
-          - invoke
-          - comfy
-    runs-on: ubuntu-latest
-    name: ${{ matrix.profile }}
-    steps:    
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
@@ -50,6 +36,9 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: actions/checkout@v3
+      - run: docker compose --profile ${{ matrix.profile }} build --progress plain
 
      # docker images      
       - name: docker images
