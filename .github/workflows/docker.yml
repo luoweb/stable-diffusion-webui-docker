@@ -49,7 +49,7 @@ jobs:
       - name: docker tag and push sd-${{ matrix.profile }}
         if: matrix.profile == 'auto'
         run: | 
-          docker tag sd-${{ matrix.profile }}:63 ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+          docker tag sd-${{ matrix.profile }}:65 ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
           docker push ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
 
       # docker tag and push   
@@ -63,5 +63,5 @@ jobs:
       - name: docker tag and push sd-${{ matrix.profile }}
         if: matrix.profile == 'comfy'
         run: | 
-          docker tag sd-${{ matrix.profile }}:4 ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+          docker tag sd-${{ matrix.profile }}:5 ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
           docker push ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
