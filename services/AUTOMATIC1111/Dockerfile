@@ -48,7 +48,9 @@ RUN --mount=type=cache,target=/root/.cache/pip \
   # sd-webi-controlnet
   pip install mediapipe svglib fvcore --prefer-binary \
   # sd-webui-prompt-all-in-one
-  pip install chardet fastapi translators openai boto3 aliyun-python-sdk-core aliyun-python-sdk-alimt --prefer-binary 
+  pip install chardet fastapi translators openai boto3 aliyun-python-sdk-core aliyun-python-sdk-alimt --prefer-binary \
+  # upgrade v161(nsfw-censor)
+  pip install diffusers ultralytics rich --prefer-binary
 
 RUN --mount=type=cache,target=/root/.cache/pip  \
   --mount=type=bind,from=xformers,source=/wheel.whl,target=/xformers-0.0.21.dev544-cp310-cp310-manylinux2014_x86_64.whl \
