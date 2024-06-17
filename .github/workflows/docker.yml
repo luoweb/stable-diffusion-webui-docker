@@ -1,8 +1,8 @@
 name: Build Images
 
 on:
-  push:
-    branches: master
+  # push:
+  #   branches: ["master"]
   pull_request:
       paths:
         - docker-compose.yml

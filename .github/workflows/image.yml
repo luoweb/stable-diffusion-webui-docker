@@ -1,0 +1,52 @@
+name: Build Images
+
+on:
+  push:
+    branches: ['main','master','dev']
+  pull_request:
+      paths:
+        - docker-compose.yml
+        - services
+env:
+  # Use docker.io for Docker Hub if empty
+  # REGISTRY: registry.us-west-1.aliyuncs.com
+  REGISTRY: registry.cn-hangzhou.aliyuncs.com
+  # github.repository as <account>/<repo>
+  # IMAGE_NAME: roweb/automatic1111-sd-webui
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        profile:
+          - auto
+          - invoke
+          - comfy
+          - download
+    runs-on: ubuntu-latest
+    name: ${{ matrix.profile }}
+    steps:
+            # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: actions/checkout@v3
+      - run: docker compose --profile ${{ matrix.profile }} build --progress plain
+
+      # docker images      
+      - name: docker images
+        if: github.event_name != 'pull_request'
+        run: docker images
+
+      # docker tag and push   
+      - name: docker tag and push sd-${{ matrix.profile }}
+        # if: matrix.profile == 'auto'
+        run: | 
+          docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | grep main | xargs -I@ bash -c "docker tag @ ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
+          docker push ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
