@@ -56,12 +56,12 @@ jobs:
       - name: docker tag and push sd-${{ matrix.profile }} to ${{ vars.REGISTRY }}
         if: matrix.profile == 'auto' || matrix.profile == 'invoke' || matrix.profile == 'comfy'
         run: | 
-          docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | grep main | xargs -I@ bash -c "docker tag @ ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
+          docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | xargs -I@ bash -c "docker tag @ ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
           docker push ${{ vars.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
 
           # docker tag and push   
       - name: docker tag and push sd-${{ matrix.profile }} to ${{ vars.QUAY_REGISTRY }}
         if: matrix.profile == 'auto' || matrix.profile == 'invoke' || matrix.profile == 'comfy'
         run: | 
-          docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | grep main | xargs -I@ bash -c "docker tag @ ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
+          docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | xargs -I@ bash -c "docker tag @ ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
           docker push ${{ vars.QUAY_REGISTRY }}/luweb/sd-${{ matrix.profile }}:latest
