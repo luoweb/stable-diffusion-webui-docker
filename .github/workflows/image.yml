@@ -28,19 +28,19 @@ jobs:
     steps:
             # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Log into registry ${{ vars.REGISTRY }}
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ vars.REGISTRY }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Log into registry ${{ var.QUAY_REGISTRY }}
+      - name: Log into registry ${{ vars.QUAY_REGISTRY }}
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
-          registry: ${{ var.QUAY_REGISTRY }}
+          registry: ${{ vars.QUAY_REGISTRY }}
           username: ${{ secrets.QUAY_USER }}
           password: ${{ secrets.QUAY_TOKEN }}
 
@@ -53,15 +53,15 @@ jobs:
         run: docker images
 
       # docker tag and push   
-      - name: docker tag and push sd-${{ matrix.profile }} to ${{ env.REGISTRY }}
+      - name: docker tag and push sd-${{ matrix.profile }} to ${{ vars.REGISTRY }}
         if: matrix.profile == 'auto' || matrix.profile == 'invoke' || matrix.profile == 'comfy'
         run: | 
           docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | grep main | xargs -I@ bash -c "docker tag @ ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
-          docker push ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
+          docker push ${{ vars.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest
 
           # docker tag and push   
-      - name: docker tag and push sd-${{ matrix.profile }} to ${{ env.QUAY_REGISTRY }}
+      - name: docker tag and push sd-${{ matrix.profile }} to ${{ vars.QUAY_REGISTRY }}
         if: matrix.profile == 'auto' || matrix.profile == 'invoke' || matrix.profile == 'comfy'
         run: | 
           docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | grep main | xargs -I@ bash -c "docker tag @ ${{ env.REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
-          docker push ${{ env.QUAY_REGISTRY }}/luweb/sd-${{ matrix.profile }}:latest
+          docker push ${{ vars.QUAY_REGISTRY }}/luweb/sd-${{ matrix.profile }}:latest
