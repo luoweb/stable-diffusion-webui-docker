@@ -63,5 +63,5 @@ jobs:
       - name: docker tag and push sd-${{ matrix.profile }} to ${{ vars.QUAY_REGISTRY }}
         if: matrix.profile == 'auto' || matrix.profile == 'invoke' || matrix.profile == 'comfy'
         run: | 
-          docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | xargs -I@ bash -c "docker tag @ ${{ vars.QUAY_REGISTRY }}/roweb/sd-${{ matrix.profile }}:latest"
+          docker images | grep "sd-${{ matrix.profile }}" | awk '{print $1":"$2}' | xargs -I@ bash -c "docker tag @ ${{ vars.QUAY_REGISTRY }}/luweb/sd-${{ matrix.profile }}:latest"
           docker push ${{ vars.QUAY_REGISTRY }}/luweb/sd-${{ matrix.profile }}:latest
